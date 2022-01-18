@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31911.196
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrackChangeProperty.Fody", "TrackChangeProperty.Fody.csproj", "{C785F6E0-B621-49F4-93C7-D77EB28A5974}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C785F6E0-B621-49F4-93C7-D77EB28A5974}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C785F6E0-B621-49F4-93C7-D77EB28A5974}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C785F6E0-B621-49F4-93C7-D77EB28A5974}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C785F6E0-B621-49F4-93C7-D77EB28A5974}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E082161F-AE5B-47DF-B016-F72A3DF96CD8}
+	EndGlobalSection
+EndGlobal
