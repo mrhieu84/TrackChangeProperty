@@ -11,7 +11,6 @@ All trackable POCOs will be inject to implement `ITrackable` iterface , you can 
 # Installation
 
 ```powershell
-PM> Install-Package Fody
 PM> Install-Package TrackChangeProperty.Fody
 ```
 
