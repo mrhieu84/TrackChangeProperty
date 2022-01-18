@@ -1,6 +1,6 @@
-# TrackChange
+# TrackChangePropery
 
-[![NuGet](https://buildstats.info/nuget/TrackChange.Fody)](https://www.nuget.org/packages/TrackChange.Fody/)
+[![NuGet](https://buildstats.info/nuget/TrackChangePropery.Fody)](https://www.nuget.org/packages/TrackChangePropery.Fody/)
 [![License MIT](https://img.shields.io/badge/license-MIT-green.svg)](http://opensource.org/licenses/MIT)
 
 This is an add-in for [Fody](https://github.com/Fody/Home/). 
