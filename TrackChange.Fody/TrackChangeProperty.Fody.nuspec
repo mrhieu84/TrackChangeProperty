@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>TrackChangeProperty.Fody</id>
+    <version>$version$</version>
+    <title>TrackChangeProperty.Fody</title>
+    <authors>JRT</authors>
+    <owners>JRT</owners>
+    <developmentDependency>true</developmentDependency>
+    <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
+    <projectUrl>http://github.com/jrt324/TrackChange</projectUrl>
+    <iconUrl>https://raw.github.com/Fody/Fody/master/package_icon.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>A modified version of TrackChange, tracking derived classes and raises the PropertyChanged event</description>
+    <language>en-AU</language>
+    <tags>Properties, TrackChange, POCO, ILWeaving, Fody, Cecil</tags>
+    <dependencies>
+      <dependency id="Fody" version="6.*"/>
+    </dependencies>
+  </metadata>
+</package>
