@@ -14,7 +14,7 @@ All trackable POCOs will be inject to implement `ITrackable` iterface.
 PM> Install-Package TrackChangeProperty.Fody
 ```
 
-# copy the code into your project
+# Copy the code into your project
 ```csharp
  public class TrackingAttribute : Attribute
     {
