@@ -124,7 +124,7 @@ public class DerivedClass1 : ITrackable
 }
 
 ```
-### event PropertyChanged
+### A simple implementation of TrackingBase 
 ```csharp
 [Tracking]
 public class TrackingBase
@@ -134,11 +134,7 @@ public class TrackingBase
 
      public event EventHandler PropertyChanged;
 
-        protected virtual void OnPropertyChanged(EventArgs e)
-        {
-
-            PropertyChanged?.Invoke(this, e);
-        }
+       
 
        public TrackingBase (){
               this.ModifiedProperties.PropertyChanged += new Action<string>(name =>
@@ -147,6 +143,35 @@ public class TrackingBase
                     OnPropertyChanged(EventArgs.Empty);
                 });
        }
+         protected virtual void OnPropertyChanged(EventArgs e)
+        {
+
+            PropertyChanged?.Invoke(this, e);
+        }
+        
+                
+        public bool IsDirty => ModifiedProperties.Count > 0;
+        public void ClearDirty()
+        {
+            ModifiedProperties.Clear();
+        }
+
+        public void MakeDirty(string name)
+        {
+            ModifiedProperties[name] = true;
+
+        }
+
+        public bool CheckAnyChange(params string[] propertiesname)
+        {
+            if (propertiesname != null)
+            {
+                return propertiesname.Any(a => ModifiedProperties.ContainsKey(a));
+            }
+            return false;
+        }
+        
+       
 
     
 }
@@ -158,9 +183,21 @@ public class DerivedClass1: TrackingBase
 }
 
 var obj= new DerivedClass1();
+//raise event on Properties Change
   obj.PropertyChanged   += (s,e)  =>
     {
             
     });
+    
+   // check any changes
+   var HasChanges = obj.IsDirty;
+   
+   //reset changes
+   obj.ClearDirty();
+   //add custom change 
+   obj.MakeDirty("mycustomname");
+   
+//check property change
+bool isChange= obj.CheckAnyChange("mycustomname", "Test2");
 
 ```
