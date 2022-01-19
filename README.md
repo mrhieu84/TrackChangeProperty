@@ -3,7 +3,7 @@
 
 
 ## This is an add-in for [Fody]
-A modified version of TrackChange (https://www.nuget.org/packages/TrackChange.Fody), tracking derived classes and raises the PropertyChanged event
+A modified version of TrackChange (https://www.nuget.org/packages/TrackChange.Fody), allow tracking derived classes and raises the PropertyChanged event
 
 TrackChangeProperty will Process any POCO class has  `TrackingAttribute`. 
 
