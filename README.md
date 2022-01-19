@@ -7,7 +7,7 @@ A modified version of TrackChange (https://www.nuget.org/packages/TrackChange.Fo
 
 TrackChangeProperty will Process any POCO class has  `TrackingAttribute`. 
 
-All trackable POCOs will be inject to implement `ITrackable` iterface , you can copy follow `ITrackable` iterface file in your project
+All trackable POCOs will be inject to implement `ITrackable` iterface.
 # Installation
 
 ```powershell
