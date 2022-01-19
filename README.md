@@ -130,7 +130,7 @@ public class DerivedClass1 : ITrackable
 public class TrackingBase
 {
     public DateTime? Prop1 { get; set; }
-   public virtual TrackDictionary<string, bool> ModifiedProperties { get; set; }
+   public virtual TrackDictionary<string, bool> ModifiedProperties { get; set; } = new TrackDictionary<string, bool>();
 
      public event EventHandler PropertyChanged;
 
