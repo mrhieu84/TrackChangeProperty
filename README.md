@@ -13,7 +13,14 @@ All trackable POCOs will be inject to implement `ITrackable` iterface ,
 ```powershell
 PM> Install-Package TrackChangeProperty.Fody
 ```
+# Add to FodyWeavers.xml
+```
+Add <TrackChangeProperty/> to FodyWeavers.xml
 
+<Weavers>
+  <TrackChangeProperty/>
+</Weavers>
+```
 # How to use
 ```
 public class ModelClass2:TrackingBase
