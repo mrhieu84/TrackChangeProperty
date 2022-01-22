@@ -11,6 +11,8 @@ using ParameterAttributes = Mono.Cecil.ParameterAttributes;
 using PropertyAttributes = Mono.Cecil.PropertyAttributes;
 using TypeSystem = Mono.Cecil.TypeSystem;
 using System;
+using TrackChangeProperty.Fody;
+using TrackChangePropertyLib;
 
 internal class CustomAttribute2
 {
@@ -68,8 +70,14 @@ public class ImplementITrackableInjector
 
     }
 
+
+   // private string Fullname_ObservableList = ModuleWeaver.TrackChangePropertyLib_Name + ".ObservableList";
+    private TypeDefinition _tokentype_ObservableList;
+    private TypeDefinition _tokentype_TrackingBase;
+
     public void Execute()
     {
+       
         var orderdPocoTypes = _allPocoTypes.OrderBy(t => {
             int count = 0;
             CustomAttribute2 attr2 = new CustomAttribute2() ;
@@ -77,18 +85,23 @@ public class ImplementITrackableInjector
             {
 
                 count++;
-               // if (!w.FullName.StartsWith("System"))
-                //{
+               
                     var attr = w.GetTrackAttribute();
                     if (attr != null) attr2.Attr = attr;
 
                     _TypeOfCustomAttribute[w.FullName]= attr2;
-              //  }
+          
                
             }
 
             return count;
             }).ToList();
+
+
+        _tokentype_ObservableList = moduleWeaver.ModuleDefinition.ImportReference(typeof(ObservableListBase)).Resolve();
+        _tokentype_TrackingBase = moduleWeaver.ModuleDefinition.ImportReference(typeof(TrackingBase)).Resolve();
+
+
         foreach (var type in orderdPocoTypes)
         {
             if (!type.IsInterface && !type.IsValueType && !type.IsEnum)
@@ -96,6 +109,7 @@ public class ImplementITrackableInjector
                 InjectImplInterface(type);
             }
         }
+        
     }
 
     public bool HasInterface(TypeDefinition type, string interfaceFullName)
@@ -129,7 +143,7 @@ public class ImplementITrackableInjector
     {
        // moduleWeaver.lo("Process Type impl Interface");
        _TypeOfCustomAttribute.TryGetValue(type.FullName, out CustomAttribute2 attr2);
-       
+      
         var attr = attr2?.Attr;
         if (attr != null  )
         {
@@ -216,221 +230,207 @@ public class ImplementITrackableInjector
                     }
                 }
             }
+          
+            ReferenceFinder _referenceFinder = new ReferenceFinder(moduleWeaver.ModuleDefinition);
 
-            //foreach (var property in type.Properties)
-            //{
-            //    if (property.Name != "IsTracking" && property.Name != "ModifiedProperties"
-            //        && property.SetMethod != null && property.SetMethod.IsPublic)
-            //    {
-            //        var propFieldStr = $"<{property.Name}>k__BackingField";
-            //        var propFieldDef = type.Fields.SingleOrDefault(f => f.Name == propFieldStr);
-            //        if (propFieldDef == null)
-            //        {
-            //            continue;
-            //        }
+            var typeTypeRef = _referenceFinder.GetTypeReference(typeof(Type));
+            var methodReference_GetTypeFromHandle = _referenceFinder.GetMethodReference(typeTypeRef, md => md.Name == "GetTypeFromHandle"  && md.Parameters.Count==1);
+           
+            var methodInvokeMmber =  _referenceFinder.GetMethodReference(typeTypeRef, md => md.Name == "InvokeMember" && md.Parameters.Count == 5);
 
-            //        var md = property.SetMethod;
-            //        md.Body.Instructions.Clear();
+            var typeTypeRef_2 = _referenceFinder.GetTypeReference(typeof(object));
+            var  GetTypeMd =   _referenceFinder.GetMethodReference(typeTypeRef_2, md => md.Name == "GetType" );
+            var EqualsMd = _referenceFinder.GetMethodReference(typeTypeRef, md => md.Name == "op_Equality" && md.Parameters.Count==2);
 
-            //        var ins1 = md.Body.Instructions;
-            //        moduleWeaver.ModuleDefinition.ImportReference(property.PropertyType);
+            var _set_ItemMothed = dicTypeDefinition.Methods.FirstOrDefault(m => m.Name == "set_Item");
+            var set_ItemMethodRef = type.Module.ImportReference(_set_ItemMothed);
+            set_ItemMethodRef = set_ItemMethodRef.MakeGeneric(typeSystem.String, typeSystem.Boolean);
 
-            //        // // .locals init( [0]bool V_0 )
-            //        // // 如果InitLocals=false，则会变成.locals( [0]bool V_0 ) 
-            //        // md.Body.InitLocals = true;
-            //        //
-            //        // //定义变量
-            //        // md.Body.Variables.Add(new VariableDefinition(typeSystem.Boolean));
-            //        // md.Body.Variables.Add(new VariableDefinition(typeSystem.Boolean));
-            //        // //end 定义变量
-
-            //        // IL_0000: nop
-            //        ins1.Add(Instruction.Create(OpCodes.Nop));
-
-            //        // IL_0001: ldarg.0
-            //        ins1.Add(Instruction.Create(OpCodes.Ldarg_0));
-
-            //        // IL_0002: call instance class [netstandard] System.Collections.Generic.Dictionary`2<string, bool> AssemblyToProcess.Class1::get_ModifiedProperties()
-            //        var getModifiedPropertiesMethod = moduleWeaver.ModuleDefinition.ImportReference(modifiedPropertiesProp.Prop.GetMethod);
-            //        ins1.Add(Instruction.Create(OpCodes.Call, getModifiedPropertiesMethod));
-
-            //        // IL_0007: ldstr     "Prop1"
-            //        ins1.Add(Instruction.Create(OpCodes.Ldstr, property.Name));
-
-            //        // IL_000C: ldarg.0
-            //        ins1.Add(Instruction.Create(OpCodes.Ldarg_0));
-
-            //        // IL_000D: call instance valuetype[netstandard] System.Nullable`1<valuetype[netstandard] System.DateTime> AssemblyToProcess.Class1::get_Prop1()
-            //        ins1.Add(Instruction.Create(OpCodes.Call, property.GetMethod));
-
-            //        // IL_0012: box valuetype [netstandard]System.Nullable`1<valuetype[netstandard] System.DateTime>
-            //        ins1.Add(Instruction.Create(OpCodes.Box, property.PropertyType));
-
-            //        // IL_0017: ldarg.1
-            //        ins1.Add(Instruction.Create(OpCodes.Ldarg_1));
-
-            //        // IL_0018: box valuetype [netstandard]System.Nullable`1<valuetype[netstandard] System.DateTime>
-            //        ins1.Add(Instruction.Create(OpCodes.Box, property.PropertyType));
-
-            //        // IL_001D: call  bool[netstandard] System.Object::Equals(object, object)
-            //        var objectDefinition = moduleWeaver.FindType("System.Object");
-            //        var objectEqualsMethodDefinition = objectDefinition.Methods.First(x => x.Name == "Equals" && x.Parameters.Count == 2);
-            //        moduleWeaver.ModuleDefinition.ImportReference(objectEqualsMethodDefinition);
-            //        var equalsMd = type.Module.ImportReference(objectEqualsMethodDefinition);
-            //        ins1.Add(Instruction.Create(OpCodes.Call, equalsMd));
-
-            //        // IL_0022: ldc.i4.0
-            //        ins1.Add(Instruction.Create(OpCodes.Ldc_I4_0));
-
-            //        // IL_0023: ceq
-            //        ins1.Add(Instruction.Create(OpCodes.Ceq));
-
-            //        // IL_0025: callvirt instance void class [netstandard] System.Collections.Generic.Dictionary`2<string, bool>::set_Item(!0, !1)
-            //        var _set_ItemMothed = dicTypeDefinition.Methods.FirstOrDefault(m => m.Name == "set_Item");
-            //        var set_ItemMethodRef = type.Module.ImportReference(_set_ItemMothed);
-            //        set_ItemMethodRef = set_ItemMethodRef.MakeGeneric(typeSystem.String, typeSystem.Boolean);
-            //        ins1.Add(Instruction.Create(OpCodes.Callvirt, set_ItemMethodRef));
-
-            //        // IL_002A: nop
-            //        ins1.Add(Instruction.Create(OpCodes.Nop));
-
-            //        // IL_002B: ldarg.0
-            //        ins1.Add(Instruction.Create(OpCodes.Ldarg_0));
-
-            //        // IL_002C: ldarg.1
-            //        ins1.Add(Instruction.Create(OpCodes.Ldarg_1));
-
-            //        // IL_002D: stfld valuetype[netstandard]System.Nullable`1<valuetype[netstandard] System.DateTime> AssemblyToProcess.Class1::k__BackingField
-            //        ins1.Add(Instruction.Create(OpCodes.Stfld, propFieldDef));
-
-            //        // IL_0032: ret
-            //        ins1.Add(Instruction.Create(OpCodes.Ret));
-            //    }
-            //}
+            var getModifiedPropertiesMethod = moduleWeaver.ModuleDefinition.ImportReference(modifiedPropertiesProp.Prop.GetMethod);
 
             foreach (var property in type.Properties)
             {
-                if ( property.Name != "ModifiedProperties"
-                    && property.SetMethod != null && property.SetMethod.IsPublic)//property.Name != "IsTracking" &&
+                if (property.Name != "ModifiedProperties"
+                    && property.SetMethod != null && property.SetMethod.IsPublic) 
                 {
                     var propFieldStr = $"<{property.Name}>k__BackingField";
-                    var propFieldDef = type.Fields.SingleOrDefault(f => f.Name == propFieldStr);
+                    var propFieldDef =  type.Fields.SingleOrDefault(f => f.Name == propFieldStr);
                     if (propFieldDef == null)
                     {
                         continue;
                     }
 
+                    var IsObservableListType = property.PropertyType.Resolve().IsSubclassOf(_tokentype_ObservableList);
+                       
+                       // (property.PropertyType as GenericInstanceType).GenericArguments[0].Resolve().IsSubclassOf(_tokentype_TrackingBase);
+
+                   
+                   
                     var md = property.SetMethod;
                     md.Body.Instructions.Clear();
 
                     var ins1 = md.Body.Instructions;
-                    moduleWeaver.ModuleDefinition.ImportReference(property.PropertyType);
-
-                    // .locals init( [0]bool V_0 )
-                    // 如果InitLocals=false，则会变成.locals( [0]bool V_0 ) 
                     md.Body.InitLocals = true;
-
-                    //定义变量
+                    ArrayType objArrType = new ArrayType(typeSystem.Object);
                     md.Body.Variables.Add(new VariableDefinition(typeSystem.Boolean));
-                    md.Body.Variables.Add(new VariableDefinition(typeSystem.Boolean));
-                    //end 定义变量
+                    md.Body.Variables.Add(new VariableDefinition(objArrType));
 
-                    //IL_0000: nop
                     ins1.Add(Instruction.Create(OpCodes.Nop));
-
-                    //IL_0001: ldarg.0
                     ins1.Add(Instruction.Create(OpCodes.Ldarg_0));
-
-                    //IL_0002: call instance valuetype [mscorlib]System.Nullable`1<valuetype [mscorlib]System.DateTime> AssemblyToProcess.Class1::get_Prop1()
-                    ins1.Add(Instruction.Create(OpCodes.Call, property.GetMethod));
-
-                    //IL_0007: box valuetype [mscorlib]System.Nullable`1<valuetype [mscorlib]System.DateTime>
+                    ins1.Add(Instruction.Create(OpCodes.Ldfld, propFieldDef));
                     ins1.Add(Instruction.Create(OpCodes.Box, property.PropertyType));
-
-                    //IL_000c: ldarg.1
                     ins1.Add(Instruction.Create(OpCodes.Ldarg_1));
-
-                    //IL_000d: box valuetype [mscorlib]System.Nullable`1<valuetype [mscorlib]System.DateTime>
                     ins1.Add(Instruction.Create(OpCodes.Box, property.PropertyType));
-
-
-                    var objectDefinition = moduleWeaver.FindType("System.Object");
-                    var objectEqualsMethodDefinition = objectDefinition.Methods.First(x => x.Name == "Equals" && x.Parameters.Count == 2);
-                    moduleWeaver.ModuleDefinition.ImportReference(objectEqualsMethodDefinition);
-
-                    //IL_0012: call bool [mscorlib]System.Object::Equals(object, object)
-                    var EqualsMd = type.Module.ImportReference(objectEqualsMethodDefinition);
 
                     ins1.Add(Instruction.Create(OpCodes.Call, EqualsMd));
-
-                    //IL_0017: stloc.0
                     ins1.Add(Instruction.Create(OpCodes.Stloc_0));
-
-                    //IL_0018: ldloc.0
                     ins1.Add(Instruction.Create(OpCodes.Ldloc_0));
-
-                    //IL_0019: ldc.i4.0
                     ins1.Add(Instruction.Create(OpCodes.Ldc_I4_0));
-
-                    //IL_001a: ceq
-                    ins1.Add(Instruction.Create(OpCodes.Ceq));
-
-                    //IL_001c: stloc.1
+                    ins1.Add(Instruction.Create(OpCodes.Ceq)); 
                     ins1.Add(Instruction.Create(OpCodes.Stloc_1));
-
-                    //IL_001d: ldloc.1
                     ins1.Add(Instruction.Create(OpCodes.Ldloc_1));
-
-                    //IL_001e: brfalse.s IL_0034
                     var IL_0034 = Instruction.Create(OpCodes.Ldarg_0);
                     ins1.Add(Instruction.Create(OpCodes.Brfalse_S, IL_0034));
-
-                    //IL_0020: nop
                     ins1.Add(Instruction.Create(OpCodes.Nop));
-
-                    //IL_0021: ldarg.0
                     ins1.Add(Instruction.Create(OpCodes.Ldarg_0));
-
-                    //IL_0022: call instance class [mscorlib]System.Collections.Generic.Dictionary`2<string, bool> AssemblyToProcess.Class1::get_ModifiedProperties()
-
-                    var getModifiedPropertiesMethod = moduleWeaver.ModuleDefinition.ImportReference(modifiedPropertiesProp.Prop.GetMethod);
                     ins1.Add(Instruction.Create(OpCodes.Call, getModifiedPropertiesMethod));
-
-                    //IL_0027: ldstr "Prop1"
                     ins1.Add(Instruction.Create(OpCodes.Ldstr, property.Name));
-
-                    //IL_002c: ldc.i4.1
                     ins1.Add(Instruction.Create(OpCodes.Ldc_I4_1));
 
-                    //IL_002d: callvirt instance void class [mscorlib]System.Collections.Generic.Dictionary`2<string, bool>::set_Item(!0, !1)
-                    //var _set_ItemMothed = typeof(Dictionary<string, bool>).GetMethod("set_Item", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Instance);
-
-                    var _set_ItemMothed = dicTypeDefinition.Methods.FirstOrDefault(m => m.Name == "set_Item");
-                    var set_ItemMethodRef = type.Module.ImportReference(_set_ItemMothed);
-                    set_ItemMethodRef = set_ItemMethodRef.MakeGeneric(typeSystem.String, typeSystem.Boolean);
-
+                    
                     ins1.Add(Instruction.Create(OpCodes.Callvirt, set_ItemMethodRef));
 
-                    //IL_0032: nop
-                    ins1.Add(Instruction.Create(OpCodes.Nop));
 
-                    //IL_0033: nop
-                    ins1.Add(Instruction.Create(OpCodes.Nop));
+                    if (IsObservableListType)
+                    {
 
-                    //IL_0034: ldarg.0
+                        ins1.Add(Instruction.Create(OpCodes.Nop));
+                        ins1.Add(Instruction.Create(OpCodes.Ldarg_1));
+                        ins1.Add(Instruction.Create(OpCodes.Ldnull));
+
+                        ins1.Add(Instruction.Create(OpCodes.Cgt_Un));
+                        ins1.Add(Instruction.Create(OpCodes.Stloc_0));
+                        ins1.Add(Instruction.Create(OpCodes.Ldloc_0));
+                        ins1.Add(Instruction.Create(OpCodes.Brfalse_S, IL_0034));
+
+                        ins1.Add(Instruction.Create(OpCodes.Nop));
+                        ins1.Add(Instruction.Create(OpCodes.Ldc_I4_2));
+                        ins1.Add(Instruction.Create(OpCodes.Newarr, typeSystem.Object));
+                        ins1.Add(Instruction.Create(OpCodes.Dup));
+
+                        ins1.Add(Instruction.Create(OpCodes.Ldc_I4_0));
+                        ins1.Add(Instruction.Create(OpCodes.Ldarg_0));
+
+                        ins1.Add(Instruction.Create(OpCodes.Stelem_Ref));
+
+                        ins1.Add(Instruction.Create(OpCodes.Dup));
+                        ins1.Add(Instruction.Create(OpCodes.Ldc_I4_1));
+                        ins1.Add(Instruction.Create(OpCodes.Ldstr, property.Name));
+                        ins1.Add(Instruction.Create(OpCodes.Stelem_Ref));
+                        ins1.Add(Instruction.Create(OpCodes.Stloc_1));
+                        ins1.Add(Instruction.Create(OpCodes.Ldarg_1));
+                        ins1.Add(Instruction.Create(OpCodes.Callvirt, GetTypeMd));
+
+                        ins1.Add(Instruction.Create(OpCodes.Ldstr, "OnParentCallPropertySet"));
+                        ins1.Add(Instruction.Create(OpCodes.Ldc_I4,256));
+                        ins1.Add(Instruction.Create(OpCodes.Ldnull));
+                        ins1.Add(Instruction.Create(OpCodes.Ldarg_1));
+                        ins1.Add(Instruction.Create(OpCodes.Ldloc_1));
+                   
+
+                        ins1.Add(Instruction.Create(OpCodes.Callvirt, methodInvokeMmber));
+                        ins1.Add(Instruction.Create(OpCodes.Pop));
+
+                    }
+
+                    ins1.Add(Instruction.Create(OpCodes.Nop));
+                    ins1.Add(Instruction.Create(OpCodes.Nop));
                     ins1.Add(IL_0034);
 
-                    //IL_0035: ldarg.1
                     ins1.Add(Instruction.Create(OpCodes.Ldarg_1));
-
-                    //IL_0036: stfld valuetype [mscorlib]System.Nullable`1<valuetype [mscorlib]System.DateTime> AssemblyToProcess.Class1::k__BackingField
                     ins1.Add(Instruction.Create(OpCodes.Stfld, propFieldDef));
-
-                    //IL_003b: ret
                     ins1.Add(Instruction.Create(OpCodes.Ret));
+
+
+                    md = property.GetMethod;
+                    md.Body.Instructions.Clear();
+
+                     ins1 = md.Body.Instructions;
+                    md.Body.InitLocals = true;
+                    md.Body.Variables.Add(new VariableDefinition(typeSystem.Boolean));
+                    md.Body.Variables.Add(new VariableDefinition(property.PropertyType));
+
+                    ins1.Add(Instruction.Create(OpCodes.Nop));
+
+                    var IL_26 = Instruction.Create(OpCodes.Ldarg_0);
+
+                    if (IsObservableListType)
+                    {
+
+                        ins1.Add(Instruction.Create(OpCodes.Nop));
+                        ins1.Add(Instruction.Create(OpCodes.Ldarg_0));
+                        ins1.Add(Instruction.Create(OpCodes.Ldfld, propFieldDef));
+                        ins1.Add(Instruction.Create(OpCodes.Ldnull));
+
+                        ins1.Add(Instruction.Create(OpCodes.Cgt_Un));
+                        ins1.Add(Instruction.Create(OpCodes.Stloc_0));
+                        ins1.Add(Instruction.Create(OpCodes.Ldloc_0));
+                        
+                        ins1.Add(Instruction.Create(OpCodes.Brfalse_S, IL_26));
+
+                        ins1.Add(Instruction.Create(OpCodes.Nop));
+                        ins1.Add(Instruction.Create(OpCodes.Ldarg_0));
+                        ins1.Add(Instruction.Create(OpCodes.Ldfld, propFieldDef));
+                        ins1.Add(Instruction.Create(OpCodes.Callvirt, GetTypeMd));
+
+                        ins1.Add(Instruction.Create(OpCodes.Ldstr, "OnParentCallPropertyGet"));
+                        ins1.Add(Instruction.Create(OpCodes.Ldc_I4, 256));
+                        ins1.Add(Instruction.Create(OpCodes.Ldnull));
+                        ins1.Add(Instruction.Create(OpCodes.Ldarg_0));
+                        ins1.Add(Instruction.Create(OpCodes.Ldfld, propFieldDef));
+
+                        ins1.Add(Instruction.Create(OpCodes.Ldc_I4_2));
+
+                        ins1.Add(Instruction.Create(OpCodes.Newarr, typeSystem.Object));
+                        ins1.Add(Instruction.Create(OpCodes.Dup));
+
+                        ins1.Add(Instruction.Create(OpCodes.Ldc_I4_0));
+                        ins1.Add(Instruction.Create(OpCodes.Ldarg_0));
+
+                        ins1.Add(Instruction.Create(OpCodes.Stelem_Ref));
+
+                        ins1.Add(Instruction.Create(OpCodes.Dup));
+                        ins1.Add(Instruction.Create(OpCodes.Ldc_I4_1));
+                        ins1.Add(Instruction.Create(OpCodes.Ldstr, property.Name));
+                        ins1.Add(Instruction.Create(OpCodes.Stelem_Ref));
+
+                        ins1.Add(Instruction.Create(OpCodes.Callvirt, methodInvokeMmber));
+                        ins1.Add(Instruction.Create(OpCodes.Pop));
+
+                    }
+
+
+                    ins1.Add(Instruction.Create(OpCodes.Nop));
+                    ins1.Add(IL_26);
+
+                    ins1.Add(Instruction.Create(OpCodes.Ldfld, propFieldDef));
+
+                    ins1.Add(Instruction.Create(OpCodes.Stloc_1));
+
+                    var IL_30 = Instruction.Create(OpCodes.Ldloc_1);
+                    ins1.Add(Instruction.Create(OpCodes.Br_S, IL_30));
+                    ins1.Add(IL_30);
+                    ins1.Add(Instruction.Create(OpCodes.Ret));
+
 
                 }
             }
+
+           
+
+       
+
+
 
         }
     }

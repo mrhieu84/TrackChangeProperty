@@ -3,165 +3,141 @@
 
 
 ## This is an add-in for [Fody]
-A modified version of TrackChange (https://www.nuget.org/packages/TrackChange.Fody), tracking derived classes and raises the PropertyChanged event
+ Fast tracking changes on an object. Include Tracking collection changes.
 
-TrackChangeProperty will Process any POCO class has  `TrackingAttribute`. 
+TrackChangeProperty will Process any POCO class inherit from TrackingBase.
 
-All trackable POCOs will be inject to implement `ITrackable` iterface , you can copy follow `ITrackable` iterface file in your project
+All trackable POCOs will be inject to implement `ITrackable` iterface , 
 # Installation
 
 ```powershell
-PM> Install-Package Fody
 PM> Install-Package TrackChangeProperty.Fody
 ```
 
-# copy the code into your project
-```csharp
- public class TrackingAttribute : Attribute
+# How to use
+```
+public class ModelClass2:TrackingBase
     {
+       public string Text { get; set; }
 
+        public DateTime? Date { get; set; }
     }
 
-    public interface ITrackable
-    {
 
-        TrackDictionary<string, bool> ModifiedProperties { get; set; }
- 
+    public class ModelClass1 : TrackingBase
+    {
+        public int? Prop1 { get; set; }
+        public string Prop2 { get; set; }
+
+        public ObservableList<ModelClass2> CollectionTracked { get; set; }
+
+        public ObservableList<string> CollectionTracked_2 { get; set; }
+
        
+
     }
 
-    public class TrackDictionary<TKey, TValue> : Dictionary<TKey, TValue>
-    {
-        public event Action<string> PropertyChanged;
 
-        public new TValue this[TKey key]
-        {
-            get => base[key];
-            set
+var obj = new ModelClass1();
+           
+
+            obj.PropertyChange += (s, e) =>
             {
-               
-                base[key] = value;
-                PropertyChanged?.Invoke(key.ToString());
+                Console.WriteLine(e.PropertyName + " changed");
+
+                //Prop1 changed
+                //CollectionTracked changed
+                //CollectionTracked changed
+                //CollectionTracked changed
+            };
+
+            obj.Prop1 = 9;
+            obj.CollectionTracked = new ObservableList<ModelClass2>();
+            obj.CollectionTracked.Add(new ModelClass2());
+            obj.CollectionTracked[0].Text = "abc";
+
+            //reset dirty
+            obj.ClearDirty();
+           
+           if (obj.IsDirty)
+            {
+                //has any changes
             }
-        }
 
-        public new void Add(TKey key, TValue value)
-        {
-            base.Add(key, value);
-            PropertyChanged?.Invoke(key.ToString());
-        }
+           if (obj.CheckAnyChange("CollectionTracked"))
+            {
+                //Property CollectionTracked changed
+            }
 
-        
-    }
+
+	
 
 ```
-
-### Your code
-
-```csharp
-[Tracking] 
-public class ClassBase
-{
-    public DateTime? Prop1 { get; set; }
-
-}
-
-public class DerivedClass1: ClassBase
-{
-   
-    public string Test2 { get; set; }
-}
-
+#What gets compiled
 
 ```
-
-### What gets compiled
-```csharp
-[Tracking]
-public class DerivedClass1 : ITrackable
+public class ModelClass1 : TrackingBase, ITrackable
 {
-    public DateTime? Prop1
+    // Properties
+    public int? Prop1 { get; set; }
+
+    public string Prop2 { get; set; }
+
+    public ObservableList<ModelClass2> CollectionTracked
     {
-        [CompilerGenerated]
         get
         {
-            return this.<Prop1>k__BackingField;
+            if (this.<CollectionTracked>k__BackingField > null)
+            {
+                object[] args = new object[] { this, "CollectionTracked" };
+                this.<CollectionTracked>k__BackingField.GetType().InvokeMember("OnParentCallPropertyGet", BindingFlags.InvokeMethod, null, this.<CollectionTracked>k__BackingField, args);
+            }
+            return this.<CollectionTracked>k__BackingField;
         }
-        [CompilerGenerated]
         set
         {
-            bool flag = object.Equals(this.Prop1, value);
-            bool flag2 = !flag;
-            if (flag2)
+            if (this.<CollectionTracked>k__BackingField != value)
             {
-                this.ModifiedProperties["Prop1"] = true;
-            }
-            this.<Prop1>k__BackingField = value;
-        }
-    }
-
-    public string Test2
-    {
-        [CompilerGenerated]
-        get
-        {
-            return this.<Test2>k__BackingField;
-        }
-        [CompilerGenerated]
-        set
-        {
-            bool flag = object.Equals(this.Test2, value);
-            bool flag2 = !flag;
-            if (flag2)
-            {
-                this.ModifiedProperties["Test2"] = true;
-            }
-            this.<Test2>k__BackingField = value;
-        }
-    }
-
-    [NonSerialized]
-    public virtual TrackDictionary<string, bool> ModifiedProperties { get; set; } = new TrackDictionary<string, bool>();
-}
-
-```
-### event PropertyChanged
-```csharp
-[Tracking]
-public class TrackingBase
-{
-    public DateTime? Prop1 { get; set; }
-   public virtual TrackDictionary<string, bool> ModifiedProperties { get; set; }
-
-     public event EventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(EventArgs e)
-        {
-
-            PropertyChanged?.Invoke(this, e);
-        }
-
-       public TrackingBase (){
-              this.ModifiedProperties.PropertyChanged += new Action<string>(name =>
+                base.ModifiedProperties["CollectionTracked"] = true;
+                if (value > null)
                 {
+                    object[] args = new object[] { this, "CollectionTracked" };
+                    value.GetType().InvokeMember("OnParentCallPropertySet", BindingFlags.InvokeMethod, null, value, args);
+                }
+            }
+            this.<CollectionTracked>k__BackingField = value;
+        }
+    }
 
-                    OnPropertyChanged(EventArgs.Empty);
-                });
-       }
-
-    
-}
-
-public class DerivedClass1: TrackingBase
-{
-   
-    public string Test2 { get; set; }
-}
-
-var obj= new DerivedClass1();
-  obj.PropertyChanged   += (s,e)  =>
+    public ObservableList<string> CollectionTracked_2
     {
-            
-    });
+        get
+        {
+            if (this.<CollectionTracked_2>k__BackingField > null)
+            {
+                object[] args = new object[] { this, "CollectionTracked_2" };
+                this.<CollectionTracked_2>k__BackingField.GetType().InvokeMember("OnParentCallPropertyGet", BindingFlags.InvokeMethod, null, this.<CollectionTracked_2>k__BackingField, args);
+            }
+            return this.<CollectionTracked_2>k__BackingField;
+        }
+        set
+        {
+            if (this.<CollectionTracked_2>k__BackingField != value)
+            {
+                base.ModifiedProperties["CollectionTracked_2"] = true;
+                if (value > null)
+                {
+                    object[] args = new object[] { this, "CollectionTracked_2" };
+                    value.GetType().InvokeMember("OnParentCallPropertySet", BindingFlags.InvokeMethod, null, value, args);
+                }
+            }
+            this.<CollectionTracked_2>k__BackingField = value;
+        }
+    }
+
+   
+}
+
+ 
 
 ```

@@ -84,11 +84,8 @@ public static class TypeDefinitionExtensions
     /// <param name="parentTypeDef"></param>
     /// <returns></returns>
     public static bool IsSubclassOf(this TypeDefinition childTypeDef, TypeDefinition parentTypeDef) =>
-       childTypeDef.MetadataToken
-           != parentTypeDef.MetadataToken
-           && childTypeDef
-          .EnumerateBaseClasses()
-          .Any(b => b.MetadataToken == parentTypeDef.MetadataToken);
+       childTypeDef.MetadataToken != parentTypeDef.MetadataToken
+       && childTypeDef.EnumerateBaseClasses().Any(b => Equals(b, parentTypeDef));
 
     /// <summary>
     /// Does childType inherit from parentInterface
@@ -99,9 +96,11 @@ public static class TypeDefinitionExtensions
     public static bool DoesAnySubTypeImplementInterface(this TypeDefinition childType, TypeDefinition parentInterfaceDef)
     {
         Debug.Assert(parentInterfaceDef.IsInterface);
-        return childType
-       .EnumerateBaseClasses()
-       .Any(typeDefinition => typeDefinition.DoesSpecificTypeImplementInterface(parentInterfaceDef));
+
+        return
+            childType
+            .EnumerateBaseClasses()
+            .Any(typeDefinition => typeDefinition.DoesSpecificTypeImplementInterface(parentInterfaceDef));
     }
 
     /// <summary>
@@ -129,7 +128,7 @@ public static class TypeDefinitionExtensions
     {
         Debug.Assert(iface1.IsInterface);
         Debug.Assert(iface0.IsInterface);
-        return iface0.MetadataToken == iface1.MetadataToken || iface0.DoesAnySubTypeImplementInterface(iface1);
+        return Equals(iface0, iface1) || iface0.DoesAnySubTypeImplementInterface(iface1);
     }
 
     /// <summary>
@@ -140,20 +139,27 @@ public static class TypeDefinitionExtensions
     /// <returns></returns>
     public static bool IsAssignableFrom(this TypeDefinition target, TypeDefinition source)
    => target == source
-      || target.MetadataToken == source.MetadataToken
+      || Equals(target, source)
       || source.IsSubclassOf(target)
       || target.IsInterface && source.DoesAnySubTypeImplementInterface(target);
 
     /// <summary>
     /// Enumerate the current type, it's parent and all the way to the top type
     /// </summary>
-    /// <param name="klassType"></param>
+    /// <param name="classType"></param>
     /// <returns></returns>
-    public static IEnumerable<TypeDefinition> EnumerateBaseClasses(this TypeDefinition klassType)
+    public static IEnumerable<TypeDefinition> EnumerateBaseClasses(this TypeDefinition classType)
     {
-        for (var typeDefinition = klassType; typeDefinition != null; typeDefinition = typeDefinition.BaseType?.Resolve())
+        for (var typeDefinition = classType; typeDefinition != null; typeDefinition = typeDefinition.BaseType?.Resolve())
         {
             yield return typeDefinition;
         }
+    }
+
+    public static bool Equals(TypeDefinition a, TypeDefinition b)
+    {
+        return
+            a.MetadataToken == b.MetadataToken
+            && a.FullName == b.FullName;
     }
 }

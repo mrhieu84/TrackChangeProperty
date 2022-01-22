@@ -3,20 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28803.352
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6A6187AA-271B-4619-9994-EBDB0A370193}"
-	ProjectSection(SolutionItems) = preProject
-		Directory.Build.props = Directory.Build.props
-	EndProjectSection
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AssemblyToProcess", "AssemblyToProcess\AssemblyToProcess.csproj", "{A68102D0-881A-46FC-BCD5-2660BEE5CA60}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests", "Tests\Tests.csproj", "{5A61FA56-28D8-4398-B82C-B9CFA58007BA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{629EFEE5-1F6E-42A5-980B-46BB3CAB847B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestBaseClassLib", "TestBaseClassLib\TestBaseClassLib.csproj", "{F06F9E31-7D34-4C21-B9E0-360AD3EB28CB}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrackChangeProperty.Fody", "TrackChangeProperty.Fody\TrackChangeProperty.Fody.csproj", "{00C2BFAC-1464-4973-B720-882B6D20C5EA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrackChangePropertyLib", "TrackChangePropertyLib\TrackChangePropertyLib.csproj", "{6AF33C57-9D04-4DD1-9119-AA849AE670F9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,14 +27,14 @@ Global
 		{5A61FA56-28D8-4398-B82C-B9CFA58007BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5A61FA56-28D8-4398-B82C-B9CFA58007BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5A61FA56-28D8-4398-B82C-B9CFA58007BA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F06F9E31-7D34-4C21-B9E0-360AD3EB28CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F06F9E31-7D34-4C21-B9E0-360AD3EB28CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F06F9E31-7D34-4C21-B9E0-360AD3EB28CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F06F9E31-7D34-4C21-B9E0-360AD3EB28CB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{00C2BFAC-1464-4973-B720-882B6D20C5EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{00C2BFAC-1464-4973-B720-882B6D20C5EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{00C2BFAC-1464-4973-B720-882B6D20C5EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{00C2BFAC-1464-4973-B720-882B6D20C5EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6AF33C57-9D04-4DD1-9119-AA849AE670F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6AF33C57-9D04-4DD1-9119-AA849AE670F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6AF33C57-9D04-4DD1-9119-AA849AE670F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6AF33C57-9D04-4DD1-9119-AA849AE670F9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -47,7 +42,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{A68102D0-881A-46FC-BCD5-2660BEE5CA60} = {629EFEE5-1F6E-42A5-980B-46BB3CAB847B}
 		{5A61FA56-28D8-4398-B82C-B9CFA58007BA} = {629EFEE5-1F6E-42A5-980B-46BB3CAB847B}
-		{F06F9E31-7D34-4C21-B9E0-360AD3EB28CB} = {629EFEE5-1F6E-42A5-980B-46BB3CAB847B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {90037076-A866-44BC-99B2-BE1C757AAAFB}

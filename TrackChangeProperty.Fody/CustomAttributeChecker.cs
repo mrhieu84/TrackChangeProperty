@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Mono.Cecil;
 
@@ -5,9 +6,11 @@ public static class CustomAttributeChecker
 {
     public static CustomAttribute GetTrackAttribute(this ICustomAttributeProvider definition)
     {
+        
         var customAttributes = definition.CustomAttributes;
-
-        return customAttributes.FirstOrDefault(x => x.AttributeType.Name == "TrackingAttribute");
+        var fullname = "TrackChangePropertyLib.TrackingAttribute";
+     
+        return customAttributes.FirstOrDefault(x => x.AttributeType.FullName == fullname);
     }
 
     public static bool ContainsTrackAttribute(this ICustomAttributeProvider definition)
@@ -25,8 +28,8 @@ public static class CustomAttributeChecker
     public static void RemoveTrackAttribute(this ICustomAttributeProvider definition)
     {
         var customAttributes = definition.CustomAttributes;
-
-        var timeAttribute = customAttributes.FirstOrDefault(x => x.AttributeType.Name == "TrackingAttribute");
+        var fullname =  "TrackChangePropertyLib.TrackingAttribute";
+        var timeAttribute = customAttributes.FirstOrDefault(x => x.AttributeType.FullName == fullname);
 
         if (timeAttribute != null)
         {

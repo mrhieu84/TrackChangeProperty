@@ -6,6 +6,7 @@ using Mono.Cecil;
 
 public class ModuleWeaver: BaseModuleWeaver
 {
+   
     public override void Execute()
     {
         var msCoreReferenceFinder = new MsCoreReferenceFinder(this, ModuleDefinition .AssemblyResolver);

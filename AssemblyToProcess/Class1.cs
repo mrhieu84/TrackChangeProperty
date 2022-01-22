@@ -1,33 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
-using Framework;
-using TestBaseClassLib;
+using System.Linq;
+using System.Reflection;
+using TrackChangePropertyLib;
 
 namespace AssemblyToProcess
 {
+
+    
   
-    public class Class2 : Class1
+ public class ModelClass3:TrackingBase
     {
-        public string Prop2 { get; set; }
-    }
-    public class Class1 : BaseClass
-    {
-        public string Prop1 { get; set; }
-    }
+       public string Text { get; set; }
 
-    [Tracking]
-    public abstract class BaseClass
-    {
-        public event Action<string> PropertyChanged;
-        public BaseClass()
-        {
-            ModifiedProperties.PropertyChanged += name => PropertyChanged?.Invoke(name);
-        }
-        public string PropBase { get; set; }
-        public virtual TrackDictionary<string, bool> ModifiedProperties { get; set; } = new TrackDictionary<string, bool>();
-
-
+        public DateTime? date { get; set; }
     }
 
 
+   
+    public class Class2 : TrackingBase
+    {
+       
+        public int? Prop2 { get; set; }
+        public string Prop3 { get; set; }
+
+
+
+        public ObservableList<ModelClass3> lst2 {get; set; } = new ObservableList<ModelClass3>() { new ModelClass3() };
+
+        public ObservableList<string> lst3 { get; set; } = new ObservableList<string>();
+
+    }
+     
+
+   
+  
 }

@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFrameworks>net46;netstandard2.0</TargetFrameworks>
+    <Authors>NNHIEU</Authors>
+    <Product>TrackChangeProperty.Common</Product>
   </PropertyGroup>
 
 </Project>
