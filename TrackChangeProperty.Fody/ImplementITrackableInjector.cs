@@ -71,9 +71,9 @@ public class ImplementITrackableInjector
     }
 
 
-   // private string Fullname_ObservableList = ModuleWeaver.TrackChangePropertyLib_Name + ".ObservableList";
-    private TypeDefinition _tokentype_ObservableList;
-    private TypeDefinition _tokentype_TrackingBase;
+  
+    private TypeDefinition _tokentype_ObservableBase;
+  //  private TypeDefinition _tokentype_TrackingBase;
 
     public void Execute()
     {
@@ -98,8 +98,8 @@ public class ImplementITrackableInjector
             }).ToList();
 
 
-        _tokentype_ObservableList = moduleWeaver.ModuleDefinition.ImportReference(typeof(ObservableListBase)).Resolve();
-        _tokentype_TrackingBase = moduleWeaver.ModuleDefinition.ImportReference(typeof(TrackingBase)).Resolve();
+        _tokentype_ObservableBase = moduleWeaver.ModuleDefinition.ImportReference(typeof(ObservableBase)).Resolve();
+     //   _tokentype_TrackingBase = moduleWeaver.ModuleDefinition.ImportReference(typeof(TrackingBase)).Resolve();
 
 
         foreach (var type in orderdPocoTypes)
@@ -260,12 +260,11 @@ public class ImplementITrackableInjector
                         continue;
                     }
 
-                    var IsObservableListType = property.PropertyType.Resolve().IsSubclassOf(_tokentype_ObservableList);
-                       
-                       // (property.PropertyType as GenericInstanceType).GenericArguments[0].Resolve().IsSubclassOf(_tokentype_TrackingBase);
+                   
+                    var IsObservableListType = property.PropertyType.Resolve().IsSubclassOf(_tokentype_ObservableBase);
 
-                   
-                   
+
+                    // (property.PropertyType as GenericInstanceType).GenericArguments[0].Resolve().IsSubclassOf(_tokentype_TrackingBase);
                     var md = property.SetMethod;
                     md.Body.Instructions.Clear();
 

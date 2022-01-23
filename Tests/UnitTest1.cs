@@ -27,28 +27,16 @@ public class WeaverTests
 
         instance.PropertyChange += new EventHandler<PropertyChangedArgs>(testEvent);
 
+        instance.Item.Name = "abc";
 
-        instance.Prop2 = 1; // countTrigger++;
-        instance.lst2[0].Text = "abc"; //countTrigger++
-        instance.lst3.Add("123"); //countTrigger++
 
         TrackDictionary<string, bool> changes = instance.ModifiedProperties;
 
       
         changes.Clear(); 
-        var cc = instance.lst2[0];
-        cc.Text = "456"; //countTrigger++
-
-
-        instance.lst2.Remove(cc); //countTrigger++;
-        changes.Clear();
-        cc.Text = "789";
-
-        instance.lst3[0] = "123";
-        instance.lst3.Remove(instance.lst3[0]); //countTrigger++
-
+       
        // total countTrigger = 6
-        Assert.True(countTrigger==6);
+        Assert.True(countTrigger==1);
       
     }
 

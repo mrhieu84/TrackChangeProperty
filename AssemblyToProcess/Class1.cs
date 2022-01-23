@@ -7,30 +7,25 @@ using TrackChangePropertyLib;
 namespace AssemblyToProcess
 {
 
-    
-  
- public class ModelClass3:TrackingBase
+    public class Item:TrackingBase
     {
-       public string Text { get; set; }
-
-        public DateTime? date { get; set; }
+        public string Name { get; set; }
     }
-
-
-   
     public class Class2 : TrackingBase
     {
-       
+
         public int? Prop2 { get; set; }
         public string Prop3 { get; set; }
 
+        public Item Item { get; set; } = new Item();
 
+        public ObservableList<Item> lst2 { get; set; }
 
-        public ObservableList<ModelClass3> lst2 {get; set; } = new ObservableList<ModelClass3>() { new ModelClass3() };
-
-        public ObservableList<string> lst3 { get; set; } = new ObservableList<string>();
-
+     
     }
+
+
+  
      
 
    

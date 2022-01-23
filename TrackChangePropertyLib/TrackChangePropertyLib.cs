@@ -16,12 +16,14 @@ namespace TrackChangePropertyLib
     }
 
 
-    public abstract class ObservableListBase
+    public abstract class ObservableBase
     {
         private object syncobject = new object();
         protected ITrackable Parent { get; set; }
 
         protected string PropertyName;
+       
+       
         public virtual void OnParentCallPropertyGet(object parentObject, string propertyname)
         {
             if (Parent == null)
@@ -46,7 +48,7 @@ namespace TrackChangePropertyLib
         }
 
     }
-    public  class ObservableList<T> : ObservableListBase, IList<T>
+    public  class ObservableList<T> : ObservableBase, IList<T>
     {
         private List<T> internalList;
         public class ItemChangedEventArgs : EventArgs
@@ -317,7 +319,7 @@ namespace TrackChangePropertyLib
 
 
     [Tracking]
-    public abstract class TrackingBase
+    public abstract class TrackingBase: ObservableBase
     {
         public virtual TrackDictionary<string, bool> ModifiedProperties { get; set; } = new TrackDictionary<string, bool>();
 
@@ -327,6 +329,9 @@ namespace TrackChangePropertyLib
         {
             this.ModifiedProperties.PropertyChanged +=  (s,e)  =>
             {
+                if (this.PropertyName != null)
+                    this.Parent.ModifiedProperties[PropertyName] = true;
+
                 PropertyChange?.Invoke(this, e);
             };
 

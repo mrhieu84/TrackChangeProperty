@@ -23,6 +23,8 @@ Add <TrackChangeProperty/> to FodyWeavers.xml
 ```
 # How to use
 ```
+Your POCO classes must inherit from TrackingBase
+
 public class ModelClass2:TrackingBase
     {
        public string Text { get; set; }
