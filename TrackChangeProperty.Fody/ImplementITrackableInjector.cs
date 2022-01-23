@@ -242,6 +242,8 @@ public class ImplementITrackableInjector
             var  GetTypeMd =   _referenceFinder.GetMethodReference(typeTypeRef_2, md => md.Name == "GetType" );
             var EqualsMd = _referenceFinder.GetMethodReference(typeTypeRef, md => md.Name == "op_Equality" && md.Parameters.Count==2);
 
+            var InEqualsMd = _referenceFinder.GetMethodReference(typeTypeRef, md => md.Name == "op_Inequality" && md.Parameters.Count == 2);
+
             var _set_ItemMothed = dicTypeDefinition.Methods.FirstOrDefault(m => m.Name == "set_Item");
             var set_ItemMethodRef = type.Module.ImportReference(_set_ItemMothed);
             set_ItemMethodRef = set_ItemMethodRef.MakeGeneric(typeSystem.String, typeSystem.Boolean);
@@ -272,33 +274,34 @@ public class ImplementITrackableInjector
                     md.Body.InitLocals = true;
                     ArrayType objArrType = new ArrayType(typeSystem.Object);
                     md.Body.Variables.Add(new VariableDefinition(typeSystem.Boolean));
+                    md.Body.Variables.Add(new VariableDefinition(typeSystem.Boolean));
                     md.Body.Variables.Add(new VariableDefinition(objArrType));
 
                     ins1.Add(Instruction.Create(OpCodes.Nop));
                     ins1.Add(Instruction.Create(OpCodes.Ldarg_0));
                     ins1.Add(Instruction.Create(OpCodes.Ldfld, propFieldDef));
-                    ins1.Add(Instruction.Create(OpCodes.Box, property.PropertyType));
                     ins1.Add(Instruction.Create(OpCodes.Ldarg_1));
-                    ins1.Add(Instruction.Create(OpCodes.Box, property.PropertyType));
 
-                    ins1.Add(Instruction.Create(OpCodes.Call, EqualsMd));
+                    ins1.Add(Instruction.Create(OpCodes.Call, InEqualsMd));
                     ins1.Add(Instruction.Create(OpCodes.Stloc_0));
                     ins1.Add(Instruction.Create(OpCodes.Ldloc_0));
-                    ins1.Add(Instruction.Create(OpCodes.Ldc_I4_0));
-                    ins1.Add(Instruction.Create(OpCodes.Ceq)); 
-                    ins1.Add(Instruction.Create(OpCodes.Stloc_1));
-                    ins1.Add(Instruction.Create(OpCodes.Ldloc_1));
-                    var IL_0034 = Instruction.Create(OpCodes.Ldarg_0);
-                    ins1.Add(Instruction.Create(OpCodes.Brfalse_S, IL_0034));
+                  
+
+                    var IL_Ret = Instruction.Create(OpCodes.Ret);
+                    ins1.Add(Instruction.Create(OpCodes.Brfalse_S, IL_Ret));
                     ins1.Add(Instruction.Create(OpCodes.Nop));
+                    ins1.Add(Instruction.Create(OpCodes.Ldarg_0));
+                    ins1.Add(Instruction.Create(OpCodes.Ldarg_1));
+                    ins1.Add(Instruction.Create(OpCodes.Stfld, propFieldDef));
+
                     ins1.Add(Instruction.Create(OpCodes.Ldarg_0));
                     ins1.Add(Instruction.Create(OpCodes.Call, getModifiedPropertiesMethod));
                     ins1.Add(Instruction.Create(OpCodes.Ldstr, property.Name));
                     ins1.Add(Instruction.Create(OpCodes.Ldc_I4_1));
-
-                    
                     ins1.Add(Instruction.Create(OpCodes.Callvirt, set_ItemMethodRef));
 
+
+                    var IL_47 = Instruction.Create(OpCodes.Nop);
 
                     if (IsObservableListType)
                     {
@@ -308,9 +311,9 @@ public class ImplementITrackableInjector
                         ins1.Add(Instruction.Create(OpCodes.Ldnull));
 
                         ins1.Add(Instruction.Create(OpCodes.Cgt_Un));
-                        ins1.Add(Instruction.Create(OpCodes.Stloc_0));
-                        ins1.Add(Instruction.Create(OpCodes.Ldloc_0));
-                        ins1.Add(Instruction.Create(OpCodes.Brfalse_S, IL_0034));
+                        ins1.Add(Instruction.Create(OpCodes.Stloc_1));
+                        ins1.Add(Instruction.Create(OpCodes.Ldloc_1));
+                        ins1.Add(Instruction.Create(OpCodes.Brfalse_S, IL_47));
 
                         ins1.Add(Instruction.Create(OpCodes.Nop));
                         ins1.Add(Instruction.Create(OpCodes.Ldc_I4_2));
@@ -326,7 +329,7 @@ public class ImplementITrackableInjector
                         ins1.Add(Instruction.Create(OpCodes.Ldc_I4_1));
                         ins1.Add(Instruction.Create(OpCodes.Ldstr, property.Name));
                         ins1.Add(Instruction.Create(OpCodes.Stelem_Ref));
-                        ins1.Add(Instruction.Create(OpCodes.Stloc_1));
+                        ins1.Add(Instruction.Create(OpCodes.Stloc_2));
                         ins1.Add(Instruction.Create(OpCodes.Ldarg_1));
                         ins1.Add(Instruction.Create(OpCodes.Callvirt, GetTypeMd));
 
@@ -334,21 +337,17 @@ public class ImplementITrackableInjector
                         ins1.Add(Instruction.Create(OpCodes.Ldc_I4,256));
                         ins1.Add(Instruction.Create(OpCodes.Ldnull));
                         ins1.Add(Instruction.Create(OpCodes.Ldarg_1));
-                        ins1.Add(Instruction.Create(OpCodes.Ldloc_1));
+                        ins1.Add(Instruction.Create(OpCodes.Ldloc_2));
                    
 
                         ins1.Add(Instruction.Create(OpCodes.Callvirt, methodInvokeMmber));
                         ins1.Add(Instruction.Create(OpCodes.Pop));
+                        ins1.Add(Instruction.Create(OpCodes.Nop));
 
                     }
+                    ins1.Add(IL_47);
 
-                    ins1.Add(Instruction.Create(OpCodes.Nop));
-                    ins1.Add(Instruction.Create(OpCodes.Nop));
-                    ins1.Add(IL_0034);
-
-                    ins1.Add(Instruction.Create(OpCodes.Ldarg_1));
-                    ins1.Add(Instruction.Create(OpCodes.Stfld, propFieldDef));
-                    ins1.Add(Instruction.Create(OpCodes.Ret));
+                    ins1.Add(IL_Ret);
 
 
                     md = property.GetMethod;

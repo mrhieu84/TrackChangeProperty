@@ -108,6 +108,7 @@ public class ModelClass1 : TrackingBase, ITrackable
         {
             if (this.<CollectionTracked>k__BackingField != value)
             {
+		this.<CollectionTracked>k__BackingField = value;
                 base.ModifiedProperties["CollectionTracked"] = true;
                 if (value > null)
                 {
@@ -115,7 +116,7 @@ public class ModelClass1 : TrackingBase, ITrackable
                     value.GetType().InvokeMember("OnParentCallPropertySet", BindingFlags.InvokeMethod, null, value, args);
                 }
             }
-            this.<CollectionTracked>k__BackingField = value;
+            
         }
     }
 
@@ -134,6 +135,7 @@ public class ModelClass1 : TrackingBase, ITrackable
         {
             if (this.<CollectionTracked_2>k__BackingField != value)
             {
+		this.<CollectionTracked_2>k__BackingField = value;
                 base.ModifiedProperties["CollectionTracked_2"] = true;
                 if (value > null)
                 {
@@ -141,7 +143,7 @@ public class ModelClass1 : TrackingBase, ITrackable
                     value.GetType().InvokeMember("OnParentCallPropertySet", BindingFlags.InvokeMethod, null, value, args);
                 }
             }
-            this.<CollectionTracked_2>k__BackingField = value;
+            
         }
     }
 

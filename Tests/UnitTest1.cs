@@ -31,10 +31,9 @@ public class WeaverTests
 
         TrackDictionary<string, bool> changes = instance.ModifiedProperties;
 
-      
-        changes.Clear(); 
-       
-       // total countTrigger = 6
+
+        changes.Clear();
+
         Assert.True(countTrigger==1);
       
     }
