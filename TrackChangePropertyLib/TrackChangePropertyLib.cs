@@ -92,11 +92,13 @@ namespace TrackChangePropertyLib
                 foreach (var w in internalList)
                 {
                     (w as TrackingBase).PropertyChange -= ModelChange;
+                    (w as TrackingBase).PropertyChange += ModelChange;
                 }
 
             }
 
         }
+
 
         protected virtual void OnItemAdded(ItemChangedEventArgs e)
         {

@@ -26,7 +26,6 @@ public class WeaverTests
         var instance = testResult.GetInstance("AssemblyToProcess.Class2");
 
         instance.PropertyChange += new EventHandler<PropertyChangedArgs>(testEvent);
-
         instance.Item.Name = "abc";
 
 
