@@ -23,7 +23,7 @@ Add <TrackChangeProperty/> to FodyWeavers.xml
 ```
 # How to use
 ```
-Your POCO classes must inherit from TrackingBase
+Your POCO classes must inherit from TrackingBase. Using built-in ObservableList  to track changes collection.
 
 public class ModelClass2:TrackingBase
     {
