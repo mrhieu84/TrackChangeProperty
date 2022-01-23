@@ -46,6 +46,7 @@ public class ModelClass2:TrackingBase
 
     }
 
+Test: Any changes of properties in ModelClass1  will trigger the PropertyChange event
 
 var obj = new ModelClass1();
            
