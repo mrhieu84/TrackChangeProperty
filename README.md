@@ -83,16 +83,52 @@ var obj = new ModelClass1();
 	
 
 ```
-#What gets compiled
+# What gets compiled
 
 ```
 public class ModelClass1 : TrackingBase, ITrackable
 {
-    // Properties
-    public int? Prop1 { get; set; }
+    public int? Prop1
+    {
+        [CompilerGenerated]
+        get
+        {
+            return this.<Prop1>k__BackingField;
+        }
+        [CompilerGenerated]
+        set
+        {
+           if (this.Prop1 != value)
+	    {
+		this.<Prop1>k__BackingField = value;
+		base.ModifiedProperties["Prop1"] = true;
+	    }
 
-    public string Prop2 { get; set; }
+        }
+    }
 
+     public string Prop2
+    {
+        [CompilerGenerated]
+        get
+        {
+            return this.<Prop2>k__BackingField;
+        }
+        [CompilerGenerated]
+        set
+        {
+           if (this.Prop2 != value)
+	    {
+		this.<Prop2>k__BackingField = value;
+		base.ModifiedProperties["Prop2"] = true;
+	    }
+
+        }
+    }
+
+   
+	
+    
     public ObservableList<ModelClass2> CollectionTracked
     {
         get
@@ -106,19 +142,20 @@ public class ModelClass1 : TrackingBase, ITrackable
         }
         set
         {
-            if (this.<CollectionTracked>k__BackingField != value)
+            ObservableList<ModelClass2> collectionTracked = this.CollectionTracked;
+            if (this.CollectionTracked != value)
             {
-		this.<CollectionTracked>k__BackingField = value;
+                this.<CollectionTracked>k__BackingField = value;
                 base.ModifiedProperties["CollectionTracked"] = true;
                 if (value > null)
                 {
-                    object[] args = new object[] { this, "CollectionTracked" };
+                    object[] args = new object[] { this, collectionTracked, "CollectionTracked" };
                     value.GetType().InvokeMember("OnParentCallPropertySet", BindingFlags.InvokeMethod, null, value, args);
                 }
             }
-            
         }
     }
+
 
     public ObservableList<string> CollectionTracked_2
     {
@@ -133,19 +170,20 @@ public class ModelClass1 : TrackingBase, ITrackable
         }
         set
         {
-            if (this.<CollectionTracked_2>k__BackingField != value)
+            ObservableList<string> list = this.CollectionTracked_2;
+            if (this.CollectionTracked_2 != value)
             {
-		this.<CollectionTracked_2>k__BackingField = value;
+                this.<CollectionTracked_2>k__BackingField = value;
                 base.ModifiedProperties["CollectionTracked_2"] = true;
                 if (value > null)
                 {
-                    object[] args = new object[] { this, "CollectionTracked_2" };
+                    object[] args = new object[] { this, list, "CollectionTracked_2" };
                     value.GetType().InvokeMember("OnParentCallPropertySet", BindingFlags.InvokeMethod, null, value, args);
                 }
             }
-            
         }
-    }
+
+
 
    
 }
