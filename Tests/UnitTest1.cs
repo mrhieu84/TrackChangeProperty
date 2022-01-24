@@ -26,15 +26,17 @@ public class WeaverTests
         var instance = testResult.GetInstance("AssemblyToProcess.Class2");
 
         instance.PropertyChange += new EventHandler<PropertyChangedArgs>(testEvent);
+     
+       
         instance.Item.Name = "abc";
-
+        instance.lst2[0].Name = "abc";
 
         TrackDictionary<string, bool> changes = instance.ModifiedProperties;
 
 
         changes.Clear();
 
-        Assert.True(countTrigger==1);
+        Assert.True(countTrigger==2);
       
     }
 

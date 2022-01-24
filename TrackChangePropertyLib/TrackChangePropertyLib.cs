@@ -7,7 +7,6 @@ namespace TrackChangePropertyLib
 {
     public class TrackingAttribute : Attribute
     {
-
     }
 
     public interface ITrackable
@@ -15,14 +14,17 @@ namespace TrackChangePropertyLib
         TrackDictionary<string, bool> ModifiedProperties { get; set; }
     }
 
-
-    public abstract class ObservableBase
+    public interface IObservableBase
+    {
+         ITrackable Parent { get; set; }
+        string PropertyName { get; set; }
+    }
+    public abstract class ObservableBase: IObservableBase
     {
         private object syncobject = new object();
-        protected ITrackable Parent { get; set; }
+        public ITrackable Parent { get; set; }
 
-        protected string PropertyName;
-       
+        public string PropertyName { get; set; }
        
         public virtual void OnParentCallPropertyGet(object parentObject, string propertyname)
         {
@@ -38,12 +40,29 @@ namespace TrackChangePropertyLib
 
 
         }
-        public virtual void OnParentCallPropertySet(object parentObject, string propertyname)
+        public virtual void OnParentCallPropertySet(object parentObject, object prevObject, string propertyname)
         {
             lock (syncobject)
             {
+                if (prevObject != null)
+                {
+                    ((IObservableBase ) prevObject).Parent = null;
+                    ((IObservableBase)prevObject).PropertyName = null;
+
+                }
                 PropertyName = propertyname;
                 Parent = (ITrackable)parentObject;
+            }
+        }
+
+
+
+        public virtual void OnParentCallReset()
+        {
+            lock (syncobject)
+            {
+                PropertyName = null;
+                Parent = null;
             }
         }
 
@@ -319,6 +338,7 @@ namespace TrackChangePropertyLib
 
     }
 
+    
 
     [Tracking]
     public abstract class TrackingBase: ObservableBase
