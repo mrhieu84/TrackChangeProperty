@@ -55,17 +55,6 @@ namespace TrackChangePropertyLib
             }
         }
 
-
-
-        public virtual void OnParentCallReset()
-        {
-            lock (syncobject)
-            {
-                PropertyName = null;
-                Parent = null;
-            }
-        }
-
     }
     public  class ObservableList<T> : ObservableBase, IList<T>
     {
