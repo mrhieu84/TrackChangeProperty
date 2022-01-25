@@ -22,8 +22,9 @@ Add <TrackChangeProperty/> to FodyWeavers.xml
 </Weavers>
 ```
 # How to use
-```
-Your POCO classes must inherit from TrackingBase. Using built-in ObservableList  to track changes collection.
+**Your POCO classes must inherit from TrackingBase. Using built-in ObservableList  to track changes collection.**
+```csharp
+
 
 public class ModelClass2:TrackingBase
     {
@@ -45,9 +46,10 @@ public class ModelClass2:TrackingBase
        
 
     }
+```
+**Test: Any changes of properties in ModelClass1  will trigger the PropertyChange event**
 
-Test: Any changes of properties in ModelClass1  will trigger the PropertyChange event
-
+```csharp
 var obj = new ModelClass1();
            
 
@@ -85,7 +87,7 @@ var obj = new ModelClass1();
 ```
 # What gets compiled
 
-```
+```csharp
 public class ModelClass1 : TrackingBase, ITrackable
 {
     public int? Prop1
