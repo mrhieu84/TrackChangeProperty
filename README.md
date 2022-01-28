@@ -5,9 +5,9 @@
 ## This is an add-in for [Fody]
  Fast tracking changes on an object. Include Tracking collection changes.
 
-TrackChangeProperty will Process any POCO class inherit from TrackingBase.
+TrackChangeProperty will Process any class inherit from TrackingBase.
 
-All trackable POCOs will be inject to implement `ITrackable` iterface , 
+All trackable  will be inject to implement `ITrackable` iterface , 
 # Installation
 
 ```powershell
