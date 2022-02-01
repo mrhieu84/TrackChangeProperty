@@ -51,7 +51,7 @@ namespace TrackChangePropertyLib
             
                 lock (syncobject)
                 {
-                  ParentList.Add(new ParentInfo { PropertyName = propertyname, Parent = (ITrackable)parentObject });
+                  ParentList.Add(new ParentInfo { PropertyName = propertyname, Parent =parentObject });
                  
                 }
           
