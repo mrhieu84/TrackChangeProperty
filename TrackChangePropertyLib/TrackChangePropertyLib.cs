@@ -8,7 +8,6 @@ namespace TrackChangePropertyLib
     public class TrackingAttribute : Attribute
     {
     }
-
     public interface ITrackable
     {
         TrackDictionary<string, bool> ModifiedProperties { get; set; }
@@ -16,29 +15,46 @@ namespace TrackChangePropertyLib
 
     public interface IObservableBase
     {
-         ITrackable Parent { get; set; }
-        string PropertyName { get; set; }
+        // ITrackable Parent { get; set; }
+        //string PropertyName { get; set; }
+        HashSet<ParentInfo> ParentList { get;  }
+
+    }
+    public class ParentInfo
+    {
+        public object Parent { get; set; }
+        public string PropertyName { get; set; }
+        public override int GetHashCode()
+        {
+           
+            return Parent.GetHashCode();
+
+           
+        }
+        public override bool Equals(object obj)
+        {
+
+            var item = obj as ParentInfo;
+            return this.Parent.Equals(item?.Parent);
+        }
+
+
     }
     public abstract class ObservableBase: IObservableBase
     {
         private object syncobject = new object();
-        public ITrackable Parent { get; set; }
+        public HashSet<ParentInfo> ParentList { get;  } = new HashSet<ParentInfo>();
 
-        public string PropertyName { get; set; }
-       
+   
         public virtual void OnParentCallPropertyGet(object parentObject, string propertyname)
         {
-            if (Parent == null)
-            {
+            
                 lock (syncobject)
                 {
-                   
-                    PropertyName = propertyname;
-                    Parent = (ITrackable)parentObject;
+                  ParentList.Add(new ParentInfo { PropertyName = propertyname, Parent = (ITrackable)parentObject });
+                 
                 }
-            }
-
-
+          
         }
         public virtual void OnParentCallPropertySet(object parentObject, object prevObject, string propertyname)
         {
@@ -46,12 +62,12 @@ namespace TrackChangePropertyLib
             {
                 if (prevObject != null)
                 {
-                    ((IObservableBase ) prevObject).Parent = null;
-                    ((IObservableBase)prevObject).PropertyName = null;
+                  ((IObservableBase)prevObject).  ParentList.Remove(new ParentInfo { Parent= parentObject });
 
                 }
-                PropertyName = propertyname;
-                Parent = (ITrackable)parentObject;
+               
+                ParentList.Add(new ParentInfo { PropertyName = propertyname, Parent =parentObject });
+
             }
         }
 
@@ -139,8 +155,14 @@ namespace TrackChangePropertyLib
 
         protected virtual void OnListChanged(EventArgs e)
         {
-            if (PropertyName!=null)
-            this.Parent.ModifiedProperties[PropertyName] = true;
+            if (ParentList != null)
+            {
+                foreach (var w in ParentList)
+                {
+                   ( (ITrackable)w.Parent).ModifiedProperties[w.PropertyName] = true;
+                }
+            }
+            // this.Parent.ModifiedProperties[PropertyName] = true;
 
             if (ListChanged != null)
                 ListChanged(this, e);
@@ -201,7 +223,7 @@ namespace TrackChangePropertyLib
         {
             internalList.Add(item);
             OnItemAdded(new ItemChangedEventArgs(item));
-            OnListChanged(new PropertyChangedArgs { PropertyName = PropertyName });
+            OnListChanged(EventArgs.Empty);
 
         }
 
@@ -340,8 +362,13 @@ namespace TrackChangePropertyLib
         {
             this.ModifiedProperties.PropertyChanged +=  (s,e)  =>
             {
-                if (this.PropertyName != null)
-                    this.Parent.ModifiedProperties[PropertyName] = true;
+                if (ParentList != null)
+                {
+                    foreach (var w in ParentList)
+                    {
+                        ((ITrackable)w.Parent).ModifiedProperties[w.PropertyName] = true;
+                    }
+                }
 
                 PropertyChange?.Invoke(this, e);
             };

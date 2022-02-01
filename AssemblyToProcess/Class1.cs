@@ -26,11 +26,13 @@ namespace AssemblyToProcess
      
     }
 
-    public class Class3 : Class2
+    public class Class3 : TrackingBase
     {
 
         public int? Prop5 { get; set; }
-     
+
+        public Item Item { get; set; }
+
 
     }
 
