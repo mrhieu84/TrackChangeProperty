@@ -78,7 +78,7 @@ public class ImplementITrackableInjector
     public void Execute()
     {
 
-        var orderdPocoTypes = _allPocoTypes.Select(t => {
+        var PocoTypes = _allPocoTypes.Select(t => {
            // int count = 0;
             CustomAttribute2 attr2 = new CustomAttribute2();
             foreach (var w in GetHierarchy(t))
@@ -102,7 +102,7 @@ public class ImplementITrackableInjector
         //   _tokentype_TrackingBase = moduleWeaver.ModuleDefinition.ImportReference(typeof(TrackingBase)).Resolve();
 
 
-        foreach (var type in orderdPocoTypes)
+        foreach (var type in PocoTypes)
         {
             if (!type.IsInterface && !type.IsValueType && !type.IsEnum)
             {
@@ -263,7 +263,7 @@ public class ImplementITrackableInjector
                     }
 
 
-                    var IsObservableListType = property.PropertyType.Resolve().IsSubclassOf(_tokentype_ObservableBase);
+                    var IsObservableType = property.PropertyType.Resolve().IsSubclassOf(_tokentype_ObservableBase);
 
 
                     // (property.PropertyType as GenericInstanceType).GenericArguments[0].Resolve().IsSubclassOf(_tokentype_TrackingBase);
@@ -280,7 +280,7 @@ public class ImplementITrackableInjector
                    
                     md.Body.Variables.Add(new VariableDefinition(objArrType));
 
-                    if (IsObservableListType)
+                    if (IsObservableType)
                     {
                         md.Body.Variables.Add(new VariableDefinition(property.PropertyType));
                         //IL_0000: nop
@@ -289,7 +289,7 @@ public class ImplementITrackableInjector
                         //IL_0001: ldarg.0
                         ins1.Add(Instruction.Create(OpCodes.Ldarg_0));
 
-                        //IL_0002: call instance valuetype [mscorlib]System.Nullable`1<valuetype [mscorlib]System.DateTime> AssemblyToProcess.Class1::get_Prop1()
+                       
                         ins1.Add(Instruction.Create(OpCodes.Call, property.GetMethod));
 
                         ins1.Add(Instruction.Create(OpCodes.Box, property.PropertyType));
@@ -306,8 +306,6 @@ public class ImplementITrackableInjector
 
                     //IL_0002: call instance valuetype [mscorlib]System.Nullable`1<valuetype [mscorlib]System.DateTime> AssemblyToProcess.Class1::get_Prop1()
                     ins1.Add(Instruction.Create(OpCodes.Call, property.GetMethod));
-
-                    //IL_0007: box valuetype [mscorlib]System.Nullable`1<valuetype [mscorlib]System.DateTime>
                     ins1.Add(Instruction.Create(OpCodes.Box, property.PropertyType));
 
                    
@@ -375,7 +373,7 @@ public class ImplementITrackableInjector
                     //IL_0032: nop
                     ins1.Add(Instruction.Create(OpCodes.Nop));
                     var IL_47 = Instruction.Create(OpCodes.Nop);
-                    if (IsObservableListType)
+                    if (IsObservableType)
                     {
                         ins1.Add(Instruction.Create(OpCodes.Nop));
                         ins1.Add(Instruction.Create(OpCodes.Ldarg_1));
@@ -446,7 +444,7 @@ public class ImplementITrackableInjector
 
                     var IL_26 = Instruction.Create(OpCodes.Ldarg_0);
 
-                    if (IsObservableListType)
+                    if (IsObservableType)
                     {
 
                         ins1.Add(Instruction.Create(OpCodes.Nop));
