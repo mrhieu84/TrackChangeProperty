@@ -10,20 +10,20 @@ namespace TrackChangePropertyLib
     }
     public interface ITrackable
     {
-        TrackDictionary<string, bool> ModifiedProperties { get; set; }
+        TrackDictionary<string, bool> ModifiedProperties { get;  set; }
     }
 
     public interface IObservableBase
     {
-        // ITrackable Parent { get; set; }
-        //string PropertyName { get; set; }
+       
         HashSet<ParentInfo> ParentList { get;  }
 
     }
     public class ParentInfo
     {
-        public object Parent { get; set; }
-        public string PropertyName { get; set; }
+       
+        public object Parent { get; internal set; }
+        public string PropertyName { get; internal set; }
         public override int GetHashCode()
         {
            
@@ -43,14 +43,27 @@ namespace TrackChangePropertyLib
     public abstract class ObservableBase: IObservableBase
     {
         private object syncobject = new object();
-        public HashSet<ParentInfo> ParentList { get;  } = new HashSet<ParentInfo>();
 
+        private HashSet<ParentInfo> _parentlist;
+        public HashSet<ParentInfo> ParentList
+        {
+            get
+            {
+
+                if (_parentlist == null) _parentlist = new HashSet<ParentInfo>();
+                return _parentlist;
+            }
+            
+        }
+
+       
    
         public virtual void OnParentCallPropertyGet(object parentObject, string propertyname)
         {
             
                 lock (syncobject)
                 {
+                  
                   ParentList.Add(new ParentInfo { PropertyName = propertyname, Parent =parentObject });
                  
                 }
@@ -60,6 +73,7 @@ namespace TrackChangePropertyLib
         {
             lock (syncobject)
             {
+               
                 if (prevObject != null)
                 {
                   ((IObservableBase)prevObject).  ParentList.Remove(new ParentInfo { Parent= parentObject });
@@ -354,7 +368,19 @@ namespace TrackChangePropertyLib
     [Tracking]
     public abstract class TrackingBase: ObservableBase
     {
-        public virtual TrackDictionary<string, bool> ModifiedProperties { get; set; } = new TrackDictionary<string, bool>();
+        private TrackDictionary<string, bool> _ModifiedProperties;
+        public virtual TrackDictionary<string, bool> ModifiedProperties {
+            get
+
+            {
+                if (_ModifiedProperties == null) _ModifiedProperties = new TrackDictionary<string, bool>();
+                return _ModifiedProperties;
+            }
+            set
+            {
+                _ModifiedProperties = value;
+            }
+        }
 
         public event EventHandler<PropertyChangedArgs> PropertyChange;
 
