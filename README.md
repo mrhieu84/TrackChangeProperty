@@ -152,7 +152,7 @@ public class ModelClass1 : TrackingBase, ITrackable
 	    {
 		this.<CollectionTracked>k__BackingField = value;
 		base.ModifiedProperties["CollectionTracked"] = true;
-		if (value > null)
+		if (value != null)
 		{
 		    object[] args = new object[] { this, target, "CollectionTracked" };
 		    value.GetType().InvokeMember("OnParentCallPropertySet", BindingFlags.InvokeMethod, null, value, args);
@@ -188,7 +188,7 @@ public class ModelClass1 : TrackingBase, ITrackable
 	    {
 		this.<CollectionTracked_2>k__BackingField = value;
 		base.ModifiedProperties["CollectionTracked_2"] = true;
-		if (value > null)
+		if (value != null)
 		{
 		    object[] args = new object[] { this, target, "CollectionTracked_2" };
 		    value.GetType().InvokeMember("OnParentCallPropertySet", BindingFlags.InvokeMethod, null, value, args);
