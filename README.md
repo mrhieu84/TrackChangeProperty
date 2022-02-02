@@ -42,7 +42,7 @@ public class ModelClass2:TrackingBase
 
         public ObservableList<ModelClass2> CollectionTracked { get; set; }
 
-        public ObservableList<string> CollectionTracked_2 { get; set; }
+        public ObservableList<string> CollectionTracked_2 { get; set; } 
 
        
 
@@ -62,13 +62,21 @@ var obj = new ModelClass1();
                 //CollectionTracked changed
                 //CollectionTracked changed
                 //CollectionTracked changed
+		
+		
+		//CollectionTracked_2 changed
+		//CollectionTracked_2 changed
+		//CollectionTracked_2 changed
             };
 
             obj.Prop1 = 9;
             obj.CollectionTracked = new ObservableList<ModelClass2>();
             obj.CollectionTracked.Add(new ModelClass2());
             obj.CollectionTracked[0].Text = "abc";
-
+		
+	    obj.CollectionTracked_2 = new ObservableList<string>();
+	    obj.CollectionTracked_2 .Add("abc");
+	   obj.CollectionTracked_2.Removet(0);
             //reset dirty
             obj.ClearDirty();
            
