@@ -40,9 +40,9 @@ public class ModelClass2:TrackingBase
         public int? Prop1 { get; set; }
         public string Prop2 { get; set; }
 
-        public ObservableList<ModelClass2> CollectionTracked { get; set; }
+        public ObservableList<ModelClass2> CollectionTracked { get; set; } //classes inherit from Trackingbase
 
-        public ObservableList<string> CollectionTracked_2 { get; set; } 
+        public ObservableList<string> CollectionTracked_2 { get; set; }  // valua types: string, int, float,...
 
        
 
