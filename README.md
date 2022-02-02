@@ -101,7 +101,7 @@ public class ModelClass1 : TrackingBase, ITrackable
         [CompilerGenerated]
         set
         {
-           if (this.Prop1 != value)
+           if (this.<Prop1>k__BackingField != value)
 	    {
 		this.<Prop1>k__BackingField = value;
 		base.ModifiedProperties["Prop1"] = true;
@@ -120,7 +120,7 @@ public class ModelClass1 : TrackingBase, ITrackable
         [CompilerGenerated]
         set
         {
-           if (this.Prop2 != value)
+           if (this.<Prop2>k__BackingField != value)
 	    {
 		this.<Prop2>k__BackingField = value;
 		base.ModifiedProperties["Prop2"] = true;
