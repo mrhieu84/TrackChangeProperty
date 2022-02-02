@@ -28,7 +28,7 @@ public class WeaverTests
         instance.PropertyChange += new EventHandler<PropertyChangedArgs>(testEvent);
      
        
-        instance.Item.Name = "abc";
+        instance.Prop3 = "abc";
         instance.lst2[0].Name = "abc";
 
         TrackDictionary<string, bool> changes = instance.ModifiedProperties;

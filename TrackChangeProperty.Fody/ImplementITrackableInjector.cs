@@ -79,12 +79,12 @@ public class ImplementITrackableInjector
     {
 
         var PocoTypes = _allPocoTypes.Select(t => {
-           // int count = 0;
+            // int count = 0;
             CustomAttribute2 attr2 = new CustomAttribute2();
             foreach (var w in GetHierarchy(t))
             {
 
-              //  count++;
+                //  count++;
 
                 var attr = w.GetTrackAttribute();
                 if (attr != null) attr2.Attr = attr;
@@ -274,29 +274,33 @@ public class ImplementITrackableInjector
                     md.Body.InitLocals = true;
                     ArrayType objArrType = new ArrayType(typeSystem.Object);
                     //md.Body.Variables.Add(new VariableDefinition(property.PropertyType));
+                    var localObjectArray = new VariableDefinition(objArrType);
+
                     md.Body.Variables.Add(new VariableDefinition(typeSystem.Boolean));
                     md.Body.Variables.Add(new VariableDefinition(typeSystem.Boolean));
 
-                   
+
                     md.Body.Variables.Add(new VariableDefinition(objArrType));
-
+                  
                     if (IsObservableType)
                     {
                         md.Body.Variables.Add(new VariableDefinition(property.PropertyType));
+
+                        md.Body.Variables.Add(localObjectArray);
                         //IL_0000: nop
                         ins1.Add(Instruction.Create(OpCodes.Nop));
 
                         //IL_0001: ldarg.0
                         ins1.Add(Instruction.Create(OpCodes.Ldarg_0));
 
-                       
-                        ins1.Add(Instruction.Create(OpCodes.Call, property.GetMethod));
 
+                        //ins1.Add(Instruction.Create(OpCodes.Call, property.GetMethod));
+                        ins1.Add(Instruction.Create(OpCodes.Ldfld, propFieldDef));
                         ins1.Add(Instruction.Create(OpCodes.Box, property.PropertyType));
 
                         ins1.Add(Instruction.Create(OpCodes.Stloc_3));
                     }
-                       
+
 
                     //IL_0000: nop
                     ins1.Add(Instruction.Create(OpCodes.Nop));
@@ -304,11 +308,10 @@ public class ImplementITrackableInjector
                     //IL_0001: ldarg.0
                     ins1.Add(Instruction.Create(OpCodes.Ldarg_0));
 
-                    //IL_0002: call instance valuetype [mscorlib]System.Nullable`1<valuetype [mscorlib]System.DateTime> AssemblyToProcess.Class1::get_Prop1()
-                    ins1.Add(Instruction.Create(OpCodes.Call, property.GetMethod));
-                    ins1.Add(Instruction.Create(OpCodes.Box, property.PropertyType));
 
-                   
+                    // ins1.Add(Instruction.Create(OpCodes.Call, property.GetMethod));
+                    ins1.Add(Instruction.Create(OpCodes.Ldfld, propFieldDef));
+                    ins1.Add(Instruction.Create(OpCodes.Box, property.PropertyType));
 
                     //IL_000c: ldarg.1
                     ins1.Add(Instruction.Create(OpCodes.Ldarg_1));
@@ -337,9 +340,9 @@ public class ImplementITrackableInjector
 
                     //IL_001e: brfalse.s IL_0034
                     var IL_0034 = Instruction.Create(OpCodes.Nop);
-                    ins1.Add(Instruction.Create(OpCodes.Brfalse_S, IL_0034));
+                    ins1.Add(Instruction.Create(OpCodes.Brfalse, IL_0034));
 
-                 
+
                     //IL_0020: nop
                     ins1.Add(Instruction.Create(OpCodes.Nop));
                     ins1.Add(Instruction.Create(OpCodes.Ldarg_0));
@@ -355,7 +358,7 @@ public class ImplementITrackableInjector
 
                     //IL_0022: call instance class [mscorlib]System.Collections.Generic.Dictionary`2<string, bool> AssemblyToProcess.Class1::get_ModifiedProperties()
 
-                   
+
                     ins1.Add(Instruction.Create(OpCodes.Call, getModifiedPropertiesMethod));
 
                     //IL_0027: ldstr "Prop1"
@@ -367,12 +370,13 @@ public class ImplementITrackableInjector
                     //IL_002d: callvirt instance void class [mscorlib]System.Collections.Generic.Dictionary`2<string, bool>::set_Item(!0, !1)
                     //var _set_ItemMothed = typeof(Dictionary<string, bool>).GetMethod("set_Item", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Instance);
 
-                  
                     ins1.Add(Instruction.Create(OpCodes.Callvirt, set_ItemMethodRef));
 
                     //IL_0032: nop
                     ins1.Add(Instruction.Create(OpCodes.Nop));
                     var IL_47 = Instruction.Create(OpCodes.Nop);
+                    var IL_77 = Instruction.Create(OpCodes.Nop);
+
                     if (IsObservableType)
                     {
                         ins1.Add(Instruction.Create(OpCodes.Nop));
@@ -423,12 +427,47 @@ public class ImplementITrackableInjector
 
                     //IL_0033: nop
                     //  ins1.Add(Instruction.Create(OpCodes.Nop));
+                    ins1.Add(Instruction.Create(OpCodes.Br_S, IL_77));
                     ins1.Add(IL_47);
+                    ins1.Add(Instruction.Create(OpCodes.Ldc_I4_2));
+                    ins1.Add(Instruction.Create(OpCodes.Newarr, typeSystem.Object));
+
+                    ins1.Add(Instruction.Create(OpCodes.Dup));
+                    ins1.Add(Instruction.Create(OpCodes.Ldc_I4_0));
+
+                    ins1.Add(Instruction.Create(OpCodes.Ldarg_0));
+                    ins1.Add(Instruction.Create(OpCodes.Stelem_Ref));
+
+                    ins1.Add(Instruction.Create(OpCodes.Dup));
+                    ins1.Add(Instruction.Create(OpCodes.Ldc_I4_1));
+                    ins1.Add(Instruction.Create(OpCodes.Ldstr, property.Name));
+                    ins1.Add(Instruction.Create(OpCodes.Stelem_Ref));
+
+
+                    ins1.Add(Instruction.Create(OpCodes.Stloc_S, localObjectArray));
+                    ins1.Add(Instruction.Create(OpCodes.Ldloc_3));
+                    ins1.Add(Instruction.Create(OpCodes.Callvirt, GetTypeMd));
+
+
+                    ins1.Add(Instruction.Create(OpCodes.Ldstr, "OnParentSetNull"));
+                    ins1.Add(Instruction.Create(OpCodes.Ldc_I4, 256));
+                    ins1.Add(Instruction.Create(OpCodes.Ldnull));
+                    ins1.Add(Instruction.Create(OpCodes.Ldloc_3));
+
+                    ins1.Add(Instruction.Create(OpCodes.Ldloc_S, localObjectArray));
+                    ins1.Add(Instruction.Create(OpCodes.Callvirt, methodInvokeMmber));
+                    ins1.Add(Instruction.Create(OpCodes.Pop));
+                    ins1.Add(Instruction.Create(OpCodes.Nop));
+
+
+                    ins1.Add(IL_77);
+
+
 
                     //IL_0034: ldarg.0
                     ins1.Add(IL_0034);
 
-                  
+
                     //IL_003b: ret
                     ins1.Add(Instruction.Create(OpCodes.Ret));
 

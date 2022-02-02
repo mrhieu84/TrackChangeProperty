@@ -85,6 +85,19 @@ namespace TrackChangePropertyLib
             }
         }
 
+
+        public virtual void OnParentSetNull(object parentObject,  string propertyname)
+        {
+            lock (syncobject)
+            {
+                if (parentObject != null)
+                {
+                    ParentList.Remove(new ParentInfo { Parent = parentObject });
+                }
+            }
+        }
+
+
     }
     public  class ObservableList<T> : ObservableBase, IList<T>
     {
