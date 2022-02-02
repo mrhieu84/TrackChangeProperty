@@ -134,6 +134,7 @@ public class ModelClass1 : TrackingBase, ITrackable
     
     public ObservableList<ModelClass2> CollectionTracked
     {
+    	 [CompilerGenerated]
         get
         {
             if (this.<CollectionTracked>k__BackingField > null)
@@ -143,6 +144,7 @@ public class ModelClass1 : TrackingBase, ITrackable
             }
             return this.<CollectionTracked>k__BackingField;
         }
+	 [CompilerGenerated]
         set
         {
             ObservableList<ModelClass2> collectionTracked = this.CollectionTracked;
@@ -162,6 +164,7 @@ public class ModelClass1 : TrackingBase, ITrackable
 
     public ObservableList<string> CollectionTracked_2
     {
+    	 [CompilerGenerated]
         get
         {
             if (this.<CollectionTracked_2>k__BackingField > null)
@@ -171,6 +174,7 @@ public class ModelClass1 : TrackingBase, ITrackable
             }
             return this.<CollectionTracked_2>k__BackingField;
         }
+	 [CompilerGenerated]
         set
         {
             ObservableList<string> list = this.CollectionTracked_2;
