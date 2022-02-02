@@ -147,17 +147,23 @@ public class ModelClass1 : TrackingBase, ITrackable
 	 [CompilerGenerated]
         set
         {
-            ObservableList<ModelClass2> collectionTracked = this.CollectionTracked;
-            if (this.CollectionTracked != value)
-            {
-                this.<CollectionTracked>k__BackingField = value;
-                base.ModifiedProperties["CollectionTracked"] = true;
-                if (value > null)
-                {
-                    object[] args = new object[] { this, collectionTracked, "CollectionTracked" };
-                    value.GetType().InvokeMember("OnParentCallPropertySet", BindingFlags.InvokeMethod, null, value, args);
-                }
-            }
+             ObservableList<Item> target = this.<CollectionTracked>k__BackingField;
+	    if (this.<CollectionTracked>k__BackingField != value)
+	    {
+		this.<CollectionTracked>k__BackingField = value;
+		base.ModifiedProperties["CollectionTracked"] = true;
+		if (value > null)
+		{
+		    object[] args = new object[] { this, target, "CollectionTracked" };
+		    value.GetType().InvokeMember("OnParentCallPropertySet", BindingFlags.InvokeMethod, null, value, args);
+		}
+		else
+		{
+		    object[] args = new object[] { this, "CollectionTracked" };
+		    target.GetType().InvokeMember("OnParentSetNull", BindingFlags.InvokeMethod, null, target, args);
+		}
+	    }
+
         }
     }
 
@@ -177,17 +183,23 @@ public class ModelClass1 : TrackingBase, ITrackable
 	 [CompilerGenerated]
         set
         {
-            ObservableList<string> list = this.CollectionTracked_2;
-            if (this.CollectionTracked_2 != value)
-            {
-                this.<CollectionTracked_2>k__BackingField = value;
-                base.ModifiedProperties["CollectionTracked_2"] = true;
-                if (value > null)
-                {
-                    object[] args = new object[] { this, list, "CollectionTracked_2" };
-                    value.GetType().InvokeMember("OnParentCallPropertySet", BindingFlags.InvokeMethod, null, value, args);
-                }
-            }
+           ObservableList<Item> target = this.<CollectionTracked_2>k__BackingField;
+	    if (this.<CollectionTracked_2>k__BackingField != value)
+	    {
+		this.<CollectionTracked_2>k__BackingField = value;
+		base.ModifiedProperties["CollectionTracked_2"] = true;
+		if (value > null)
+		{
+		    object[] args = new object[] { this, target, "CollectionTracked_2" };
+		    value.GetType().InvokeMember("OnParentCallPropertySet", BindingFlags.InvokeMethod, null, value, args);
+		}
+		else
+		{
+		    object[] args = new object[] { this, "CollectionTracked_2" };
+		    target.GetType().InvokeMember("OnParentSetNull", BindingFlags.InvokeMethod, null, target, args);
+		}
+	    }
+
         }
 
 
