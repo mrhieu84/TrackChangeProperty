@@ -76,7 +76,7 @@ var obj = new ModelClass1();
 		
 	    obj.CollectionTracked_2 = new ObservableList<string>();
 	    obj.CollectionTracked_2 .Add("abc");
-	   obj.CollectionTracked_2.Removet(0);
+	   obj.CollectionTracked_2.RemoveAt(0);
             //reset dirty
             obj.ClearDirty();
            
